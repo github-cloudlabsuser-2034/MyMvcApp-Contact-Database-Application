@@ -9,10 +9,41 @@ public class UserController : Controller
     public static System.Collections.Generic.List<User> userlist = new System.Collections.Generic.List<User>();
 
         // GET: User
-        public ActionResult Index()
+        public ViewResult Index()
         {
             // Implement the Index method here
+            if (userlist == null)
+            {
+                userlist = new System.Collections.Generic.List<User>();
+            }
             return View(userlist);
+        }
+        // GET: User/Edit/5
+        public ActionResult Edit(int id)
+        {
+            var user = userlist.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        // POST: User/Edit/5
+        [HttpPost]
+        public ActionResult Edit(int id, User user)
+        {
+            var userToUpdate = userlist.FirstOrDefault(u => u.Id == id);
+            if (userToUpdate != null)
+            {
+                userToUpdate.Name = user.Name;
+                userToUpdate.Email = user.Email;
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // GET: User/Details/5
@@ -28,7 +59,8 @@ public class UserController : Controller
         }
 
         // GET: User/Create
-        public ActionResult Create()
+        [HttpGet]
+        public ViewResult Create()
         {
             //Implement the Create method here
             return View();
